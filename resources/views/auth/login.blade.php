@@ -21,8 +21,14 @@
 
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
+                       
+                <div class="input-group">
                 <input id="password" type="password"
                        class="form-control @error('password') is-invalid @enderror" name="password" required>
+                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('password')">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
                 @error('password')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -39,3 +45,16 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+    <script>
+        function togglePassword(fieldId) {
+            const input = document.getElementById(fieldId);
+            if (input.type === "password") {
+                input.type = "text";
+            } else {
+                input.type = "password";
+            }
+        }
+    </script>
+@endpush

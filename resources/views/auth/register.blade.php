@@ -57,13 +57,16 @@
     </div>
 </div>
 @endsection
-<script>
-    function togglePassword(fieldId) {
-        const input = document.getElementById(fieldId);
-        if (input.type === "password") {
-            input.type = "text";
-        } else {
-            input.type = "password";
+
+@push('scripts')
+    <script>
+        function togglePassword(fieldId) {
+            const input = document.getElementById(fieldId);
+            if (input.type === "password") {
+                input.type = "text";
+            } else {
+                input.type = "password";
+            }
         }
-    }
-</script>
+    </script>
+@endpush
