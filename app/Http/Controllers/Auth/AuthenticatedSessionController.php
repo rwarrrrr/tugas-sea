@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\AppLog;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -28,7 +29,22 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        AppLog::create([
+            'foreign_id' => 0,
+            'changed_by' => Auth::id(),
+            'model_type' => 'Authorized',
+            'action' => 'login',
+            'old_data' => '',
+            'new_data' => '',
+        ]);
+
+        $user = Auth::user();
+
+        return match ($user->role) {
+            'admin' => redirect()->intended('/admin/dashboard'),
+            'user'  => redirect()->intended('/dashboard'),
+            default => redirect()->intended('/'),
+        };
     }
 
     /**
