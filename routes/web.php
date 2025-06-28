@@ -9,6 +9,8 @@ Route::get('/', function () {
 });
 
 Route::view('/menu', 'pages.menu');
+Route::view('/subscription', 'pages.subscription');
+Route::view('/contact', 'pages.contact');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
