@@ -101,66 +101,59 @@
         <div class="container">
             <h3 class="text-center mb-4 fw-bold">What Our Customers Say</h3>
 
-            <!-- Testimonial Carousel -->
-            <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <!-- Testimonial 1 -->
-                    <div class="carousel-item active">
-                        <div class="text-center">
-                            <blockquote class="blockquote">
-                                <p>"The food is amazing and I feel healthier already!"</p>
-                            </blockquote>
-                            <figcaption class="blockquote-footer">
-                                Sarah <cite title="Source Title">⭐⭐⭐⭐⭐</cite>
-                            </figcaption>
-                        </div>
+            <div class="mt-5">
+                <h4 class="mb-3">Customer Testimonials</h4>
+                <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @foreach(\App\Models\Testimonial::latest()->take(5)->get() as $key => $testimonial)
+                            <div class="carousel-item @if($key == 0) active @endif">
+                                <div class="text-center">
+                                    <blockquote class="blockquote">
+                                        <p>"{{ $testimonial->message }}"</p>
+                                    </blockquote>
+                                    <figcaption class="blockquote-footer">
+                                        {{ $testimonial->customer_name }} <cite>({{ str_repeat('⭐', $testimonial->rating) }})</cite>
+                                    </figcaption>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <!-- Testimonial 2 -->
-                    <div class="carousel-item">
-                        <div class="text-center">
-                            <blockquote class="blockquote">
-                                <p>"Great service and flexible delivery. Highly recommend!"</p>
-                            </blockquote>
-                            <figcaption class="blockquote-footer">
-                                Andi <cite title="Source Title">⭐⭐⭐⭐</cite>
-                            </figcaption>
-                        </div>
-                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                </button>
             </div>
 
-            <!-- Add Testimonial Form -->
+
             <div class="mt-5">
                 <h5 class="mb-3">Share your experience</h5>
-                <form id="testimonialForm">
+                @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
+
+                <form method="POST" action="{{ route('testimonials.store') }}" id="testimonialForm">
+                    @csrf
                     <div class="mb-3">
-                        <label for="customerName" class="form-label">Your Name</label>
-                        <input type="text" class="form-control" id="customerName" required>
+                        <label class="form-label">Customer Name</label>
+                        <input type="text" name="customer_name" id="customerName" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label for="reviewMessage" class="form-label">Your Review</label>
-                        <textarea class="form-control" id="reviewMessage" rows="3" required></textarea>
+                        <label class="form-label">Review Message</label>
+                        <textarea name="message" id="reviewMessage" class="form-control" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Rating</label>
                         <div id="starRating" class="d-flex gap-1">
-                            <i class="bi bi-star fs-4 text-warning star" data-value="1" role="button"></i>
-                            <i class="bi bi-star fs-4 text-warning star" data-value="2" role="button"></i>
-                            <i class="bi bi-star fs-4 text-warning star" data-value="3" role="button"></i>
-                            <i class="bi bi-star fs-4 text-warning star" data-value="4" role="button"></i>
-                            <i class="bi bi-star fs-4 text-warning star" data-value="5" role="button"></i>
+                            @for ($i = 1; $i <= 5; $i++)
+                                <i class="bi bi-star fs-4 text-warning star" data-value="{{ $i }}" role="button"></i>
+                            @endfor
                         </div>
-                        <input type="hidden" id="rating" required>
+                        <input type="hidden" name="rating" id="rating" required>
                     </div>
-
-
-                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                    <button type="submit" class="btn btn-primary">Submit Testimonial</button>
                 </form>
             </div>
         </div>

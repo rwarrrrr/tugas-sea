@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\TestimonialController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,7 +22,7 @@ Route::get('/admin/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-
+    Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
 
 });
 
