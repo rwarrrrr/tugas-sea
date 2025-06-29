@@ -200,7 +200,7 @@
                 const formData = new FormData(this);
 
                 $.ajax({
-                    url: '/admin/plans/' + id,
+                    url: '{{ route("plans.update", ":id") }}'.replace(':id', id), 
                     method: 'POST',
                     data: formData,
                     contentType: false,
@@ -244,7 +244,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '/admin/plans/' + planId,
+                            url: '{{ route("plans.destroy", ":id") }}' .replace(':id', planId),
                             type: 'POST',
                             data: {
                                 _token: '{{ csrf_token() }}',
@@ -281,7 +281,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '/admin/plans/bulk-delete',
+                            url: '{{ route("plans.bulkDelete") }}',
                             method: 'POST',
                             data: {
                                 _token: '{{ csrf_token() }}',
@@ -315,7 +315,7 @@
                 }
 
                 let query = $.param({ ids: ids });
-                window.location.href = '/admin/plans/export-excel?' + query;
+                window.location.href = '{{ route("plans.exportExcel") }}?' + query;
             });
 
             $('#bulk-export-pdf').on('click', function () {
@@ -329,7 +329,7 @@
                 }
 
                 let query = $.param({ ids: ids });
-                window.open('/admin/plans/export-pdf?' + query, '_blank');
+                window.open('{{ route("plans.exportPdf") }}?' + query, '_blank');
             });
 
         });
@@ -353,7 +353,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '/admin/plans/bulk-status',
+                        url: '{{ route("plans.bulkStatus") }}',
                         method: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',

@@ -23,10 +23,10 @@ Route::middleware('auth')->group(function () {
         })->middleware(['auth', 'verified'])->name('admin.dashboard');
 
         Route::get('/plans/data', [PlanController::class, 'data'])->name('plans.data');
-        Route::post('/plans/bulk-delete', [PlanController::class, 'bulkDelete']);
-        Route::post('/plans/bulk-status', [PlanController::class, 'bulkStatus']);
-        Route::get('/plans/export-excel', [PlanController::class, 'export']);
-        Route::get('/plans/export-pdf', [PlanController::class, 'exportPdf']);
+        Route::post('/plans/bulk-delete', [PlanController::class, 'bulkDelete'])->name('plans.bulkDelete');
+        Route::post('/plans/bulk-status', [PlanController::class, 'bulkStatus'])->name('plans.bulkStatus');
+        Route::get('/plans/export-excel', [PlanController::class, 'export'])->name('plans.exportExcel');
+        Route::get('/plans/export-pdf', [PlanController::class, 'exportPdf'])->name('plans.exportPdf');
         Route::resource('plans', PlanController::class)->except(['show']);
     });
     

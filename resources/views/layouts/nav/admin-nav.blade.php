@@ -5,7 +5,7 @@
 </li>
 
 <li class="nav-item">
-    <a class="nav-link {{ request()->is('plans') ? 'active fw-bold' : '' }}" href="{{ route('plans.index') }}">
+    <a class="nav-link {{ request()->is('admin/plans') ? 'active fw-bold' : '' }}" href="{{ route('plans.index') }}">
         Plan
     </a>
 </li>
