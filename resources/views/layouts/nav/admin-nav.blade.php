@@ -23,7 +23,7 @@
 </li>
 
 <li class="nav-item">
-    <a class="nav-link {{ request()->is('contact') ? 'active fw-bold' : '' }}" href="{{ url('/contact') }}">
+    <a class="nav-link {{ request()->is('admin/contact') ? 'active fw-bold' : '' }}" href="{{ route('contacts.index') }}">
         Contact
     </a>
 </li>
