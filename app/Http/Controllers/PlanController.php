@@ -17,9 +17,7 @@ class PlanController extends Controller
      */
     public function index()
     {
-        return view('pages.admin.plans.index', [
-            'plans' => Plan::latest()->get()
-        ]);
+        return view('pages.admin.plans.index');
     }
 
     /**
@@ -27,7 +25,7 @@ class PlanController extends Controller
      */
     public function create()
     {
-        return view('pages.admin.plans.create');
+        //
     }
 
     /**
@@ -70,7 +68,7 @@ class PlanController extends Controller
      */
     public function edit(Plan $plan)
     {
-        return view('pages.admin.plans.edit', compact('plan'));
+        //
     }
 
     /**

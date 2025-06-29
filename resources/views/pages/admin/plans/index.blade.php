@@ -36,7 +36,7 @@
                 <th>Duration</th>
                 <th>Description</th>
                 <th>Image</th>
-                <th>Active</th>
+                <th>Status</th>
                 <th>Action</th>
             </tr>
         </thead>
