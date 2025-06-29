@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'SEA Catering') }}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
@@ -22,7 +22,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">                   
                     @auth
-                        @includeIf(Auth::user()->role == 'admin' ? 'layouts.admin-nav' : 'layouts.nav') 
+                        @includeIf(Auth::user()->role == 'admin' ? 'layouts.nav.admin-nav' : 'layouts.nav.nav') 
                     @else
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('/') ? 'active fw-bold' : '' }}" href="{{ url('/') }}">
@@ -73,7 +73,12 @@
         &copy; {{ date('Y') }} SEA Catering. All rights reserved.
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @stack('scripts')
 </body>
 </html>

@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Testimonial extends Model
+class Plan extends Model
 {
-    protected $table = 'tbl_testimonials'; 
-    protected $fillable = ['customer_name', 'message', 'rating', 'created_by', 'updated_by'];
-
+    protected $table = 'tbl_plans';
+    protected $fillable = ['name', 'price', 'highlight', 'duration', 'description', 'image', 'is_active', 'created_by', 'updated_by'];
+    
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
