@@ -6,6 +6,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\UserMiddleware;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\UserManagementController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,6 +29,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/plans/export-excel', [PlanController::class, 'export'])->name('plans.exportExcel');
         Route::get('/plans/export-pdf', [PlanController::class, 'exportPdf'])->name('plans.exportPdf');
         Route::resource('plans', PlanController::class)->except(['show']);
+        
+        Route::get('users/data', [UserManagementController::class, 'data'])->name('users.data');
+        Route::post('/users/bulk-delete', [UserManagementController::class, 'bulkDelete'])->name('users.bulkDelete');
+        Route::post('users/reset-password/{user}', [UserManagementController::class, 'resetPassword'])->name('users.reset-password');
+        Route::resource('users', UserManagementController::class)->except(['show']);
     });
     
     Route::middleware([UserMiddleware::class])->group(function () {
