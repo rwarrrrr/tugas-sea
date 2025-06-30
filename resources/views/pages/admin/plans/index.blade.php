@@ -33,7 +33,8 @@
                 <th>Name</th>
                 <th>Price (Rp)</th>
                 <th>Highlight</th>
-                <th>Duration</th>
+                <th>Meal Type</th>
+                <th>Delivery Days</th>
                 <th>Description</th>
                 <th>Image</th>
                 <th>Status</th>
@@ -81,7 +82,10 @@
                     { data: 'name' },
                     { data: 'price', render: $.fn.dataTable.render.number(',', '.', 0, 'Rp') },
                     { data: 'highlight' },
-                    { data: 'duration' },
+                    { data: 'meal_types' },
+                    { data: 'delivery_days', render: function (data) {
+                        return data.map(day => day.charAt(0).toUpperCase() + day.slice(1)).join(', ');
+                    }},
                     { data: 'description' },
                     { data: 'image', orderable: false, searchable: false },
                     { data: 'is_active', render: function (data) {
@@ -168,14 +172,41 @@
             
             $('#planTable').on('click', '.edit-btn', function () {
                 let data = $(this).data();
-
                 $('#edit_id').val(data.id);
                 $('#edit_name').val(data.name);
                 $('#edit_price').val(data.price);
                 $('#edit_highlight').val(data.highlight);
-                $('#edit_duration').val(data.duration);
                 $('#edit_description').val(data.description);
                 $('#editPlanForm').find('select[name="is_active"]').val(data.is_active ? 1 : 0);
+
+                let rawMealTypes = $(this).attr('data-meal_types');
+                let rawDeliveryDays = $(this).attr('data-delivery_days');
+
+                let mealTypes = [];
+                let deliveryDays = [];
+
+                try {
+                    mealTypes = JSON.parse(rawMealTypes.replace(/&quot;/g, '"'));
+                } catch (e) {
+                    console.error('Invalid meal_types JSON', rawMealTypes);
+                }
+
+                try {
+                    deliveryDays = JSON.parse(rawDeliveryDays.replace(/&quot;/g, '"'));
+                } catch (e) {
+                    console.error('Invalid delivery_days JSON', rawDeliveryDays);
+                }
+
+                // Centang ulang
+                $('input[name="meal_types[]"]').prop('checked', false);
+                mealTypes.forEach(val => {
+                    $('input[name="meal_types[]"][value="' + val + '"]').prop('checked', true);
+                });
+
+                $('input[name="delivery_days[]"]').prop('checked', false);
+                deliveryDays.forEach(val => {
+                    $('input[name="delivery_days[]"][value="' + val + '"]').prop('checked', true);
+                });
 
                 if (data.image) {
                     $('#edit_preview').attr('src', '/storage/' + data.image).show();

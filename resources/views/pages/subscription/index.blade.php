@@ -33,15 +33,15 @@
             <div class="mb-3">
                 <label class="form-label">*Meal Type (Choose at least 1)</label>
                 <div class="form-check">
-                    <input class="form-check-input meal-type" name="meal_types[]" type="checkbox" value="1" id="breakfast">
+                    <input class="form-check-input meal-type" name="meal_types[]" type="checkbox" value="breakfast" id="breakfast">
                     <label class="form-check-label" for="breakfast">Breakfast</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input meal-type" name="meal_types[]" type="checkbox" value="1" id="lunch">
+                    <input class="form-check-input meal-type" name="meal_types[]" type="checkbox" value="lunch" id="lunch">
                     <label class="form-check-label" for="lunch">Lunch</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input meal-type" name="meal_types[]" type="checkbox" value="1" id="dinner">
+                    <input class="form-check-input meal-type" name="meal_types[]" type="checkbox" value="dinner" id="dinner">
                     <label class="form-check-label" for="dinner">Dinner</label>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                     @foreach(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] as $day)
                         <div class="col-md-4">
                             <div class="form-check">
-                                <input class="form-check-input delivery-day" name="delivery_days[]" type="checkbox" value="1" id="{{ strtolower($day) }}">
+                                <input class="form-check-input delivery-day" name="delivery_days[]" type="checkbox" value="{{ strtolower($day) }}" id="{{ strtolower($day) }}">
                                 <label class="form-check-label" for="{{ strtolower($day) }}">{{ $day }}</label>
                             </div>
                         </div>

@@ -37,7 +37,8 @@ class PlanController extends Controller
             'name' => 'required',
             'price' => 'required|integer',
             'highlight' => 'string|max:191',
-            'duration' => 'string|max:50',
+            'meal_types'    => 'required|array|min:1',
+            'delivery_days' => 'required|array|min:1',
             'description' => 'required',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
@@ -80,7 +81,8 @@ class PlanController extends Controller
             'name' => 'required|string|max:100',
             'price' => 'required|integer|min:10000', 
             'highlight' => 'string|max:191',
-            'duration' => 'string|max:50',
+            'meal_types'    => 'required|array|min:1',
+            'delivery_days' => 'required|array|min:1',
             'description' => 'required|string',
             'image' => 'nullable|image|max:2048',
             'is_active' => 'boolean'
@@ -158,7 +160,9 @@ class PlanController extends Controller
                             data-name="'.$plan->name.'"
                             data-price="'.$plan->price.'"
                             data-highlight="'.$plan->highlight.'"
-                            data-duration="'.$plan->duration.'"                            
+                            data-meal_types="' . htmlspecialchars(json_encode($plan->meal_types), ENT_QUOTES, 'UTF-8') . '"
+                            data-delivery_days="' . htmlspecialchars(json_encode($plan->delivery_days), ENT_QUOTES, 'UTF-8') . '" 
+                            data-delivery_days=\''.json_encode($plan->delivery_days).'\'                            
                             data-description="'.$plan->description.'"
                             data-image="'.$plan->image.'"
                             data-is_active="'.$plan->is_active.'">Edit</button>

@@ -23,8 +23,32 @@
                 <input type="text" name="highlight" id="edit_highlight" class="form-control" maxlength="191" required>
             </div>
             <div class="mb-3">
-                <label>Duration</label>
-                <input type="text" name="duration" id="edit_duration" class="form-control" maxlength="50" required>
+                <label>Meal Type</label>
+                <div class="form-check">
+                    <input class="form-check-input" name="meal_types[]" type="checkbox" value="breakfast" id="edit_breakfast">
+                    <label class="form-check-label" for="edit_breakfast">Breakfast</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" name="meal_types[]" type="checkbox" value="lunch" id="edit_lunch">
+                    <label class="form-check-label" for="edit_lunch">Lunch</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" name="meal_types[]" type="checkbox" value="dinner" id="edit_dinner">
+                    <label class="form-check-label" for="edit_dinner">Dinner</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label>Delivery Days</label>
+                <div class="row">
+                    @foreach(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] as $day)
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" name="delivery_days[]" type="checkbox" value="{{ strtolower($day) }}" id="edit_{{ strtolower($day) }}">
+                                <label class="form-check-label" for="edit_{{ strtolower($day) }}">{{ $day }}</label>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
           <div class="mb-3">
             <label>Description</label>
