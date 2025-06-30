@@ -28,6 +28,16 @@
             </div>
 
             <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input id="phone" type="text"
+                       class="form-control @error('phone') is-invalid @enderror" name="phone"
+                       value="{{ old('phone') }}" required>
+                @error('phone')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <div class="input-group">
                     <input id="password" type="password"

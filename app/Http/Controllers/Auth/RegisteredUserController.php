@@ -44,6 +44,7 @@ class RegisteredUserController extends Controller
                 'regex:/[^a-zA-Z0-9]/',
                 'confirmed',
             ],
+            'phone' => ['required', 'regex:/^(08|\+628)[0-9]{8,13}$/'],
         ])->validate();
 
         $user = User::create([
@@ -51,6 +52,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'user',
+            'phone' => $request->phone
         ]);
 
         event(new Registered($user));
