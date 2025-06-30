@@ -9,12 +9,13 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\MenuController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::view('/menu', 'pages.menu');
+Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 Route::view('/contact', 'pages.contact');
 
 Route::middleware('auth')->group(function () {
@@ -49,6 +50,8 @@ Route::middleware('auth')->group(function () {
         
         Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription');
         Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
+        
+        Route::post('/menu', [MenuController::class, 'store'])->name('menu.store');
     });
 
 });

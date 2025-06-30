@@ -28,72 +28,58 @@
     </section>
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        @php
-            $mealPlans = [
-                [
-                    'id' => 1,
-                    'name' => 'Basic Plan',
-                    'price' => 'Rp 150.000 / week',
-                    'desc' => 'Perfect for individuals who want to start eating healthy.',
-                    'details' => 'Includes 7 meals/week. Balanced macros. Ideal for beginners.',
-                    'image' => 'https://source.unsplash.com/400x250/?healthy,food'
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'Family Plan',
-                    'price' => 'Rp 500.000 / week',
-                    'desc' => 'Healthy meals for the whole family.',
-                    'details' => 'Includes 28 meals/week. Family-sized portions with balanced nutrients.',
-                    'image' => 'https://source.unsplash.com/400x250/?family,meal'
-                ],
-                [
-                    'id' => 3,
-                    'name' => 'Keto Plan',
-                    'price' => 'Rp 250.000 / week',
-                    'desc' => 'Low-carb, high-fat meals to support your keto goals.',
-                    'details' => 'Includes 14 keto meals/week with precise macronutrient breakdown.',
-                    'image' => 'https://source.unsplash.com/400x250/?keto,diet'
-                ],
-            ];
-        @endphp
 
-        @foreach ($mealPlans as $plan)
+        @foreach ($plans as $plan)
             <div class="col">
                 <div class="card h-100 shadow-sm">
                     <img src="{{ $plan['image'] }}" class="card-img-top" alt="{{ $plan['name'] }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ $plan['name'] }}</h5>
                         <p class="text-success fw-semibold">{{ $plan['price'] }}</p>
-                        <p class="card-text">{{ $plan['desc'] }}</p>
-                        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#planModal{{ $plan['id'] }}">
+                        <p class="card-text">{{ $plan['highlight'] }}</p>
+                        <button class="btn btn-outline-primary show-detail-btn"
+                            data-id="{{ $plan['id'] }}"
+                            data-name="{{ $plan['name'] }}"
+                            data-price="{{ $plan['price'] }}"
+                            data-image="{{ $plan['image'] }}"
+                            data-description="{{ $plan['description'] }}">
                             See More Details
                         </button>
+
                     </div>
                 </div>
             </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="planModal{{ $plan['id'] }}" tabindex="-1" aria-labelledby="planModalLabel{{ $plan['id'] }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="planModalLabel{{ $plan['id'] }}">{{ $plan['name'] }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <img src="{{ $plan['image'] }}" alt="{{ $plan['name'] }}" class="img-fluid mb-3 rounded">
-                            <p><strong>Price:</strong> {{ $plan['price'] }}</p>
-                            <p>{{ $plan['details'] }}</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <a href="#" class="btn btn-primary">Subscribe Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
         @endforeach
     </div>
+
+    <!-- Global Modal for Plan Detail + Subscription Form -->
+    <div class="modal fade" id="planDetailModal" tabindex="-1" aria-labelledby="planModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="subscribeForm">
+                    @csrf
+                    <input type="hidden" name="plan_id" id="plan_id">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="planModalLabel">Plan Name</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="planModalImage" src="" alt="" class="img-fluid mb-3 rounded">
+                        <p><strong>Price:</strong> <span id="planModalPrice"></span></p>
+                        <p id="planModalDescription"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="submitSubscribe">Subscribe Now</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
 
     <hr class="my-5">
 
@@ -105,7 +91,7 @@
                 <h4 class="mb-3">Customer Testimonials</h4>
                 <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                        @foreach(\App\Models\Testimonial::latest()->take(5)->get() as $key => $testimonial)
+                        @foreach($testimonials as $key => $testimonial)
                             <div class="carousel-item @if($key == 0) active @endif">
                                 <div class="text-center">
                                     <blockquote class="blockquote">
@@ -163,6 +149,61 @@
 
 @push('scripts')
     <script>
+        $(document).ready(function () {
+            $('.show-detail-btn').on('click', function () {
+                const id = $(this).data('id');
+                const name = $(this).data('name');
+                const price = $(this).data('price');
+                const image = $(this).data('image');
+                const description = $(this).data('description');
+
+                $('#planModalLabel').text(name);
+                $('#planModalPrice').text(price);
+                $('#planModalImage').attr('src', image).attr('alt', name);
+                $('#planModalDescription').text(description);
+                $('#plan_id').val(id); // <-- SET plan_id untuk form
+
+                $('#planDetailModal').modal('show');
+            });
+            
+            $('#submitSubscribe').on('click', function () {
+                $('#submitSubscribe').prop('disabled', true).text('Submitting...');
+
+                let formData = {
+                    _token: $('input[name="_token"]').val(),
+                    plan_id: $('#plan_id').val(),
+                };
+
+                $.ajax({
+                    url: "{{ route('menu.store') }}",
+                    method: "POST",
+                    data: formData,
+                    success: function (response) {
+                        $('#planDetailModal').modal('hide');
+                        $('#submitSubscribe').prop('disabled', false).text('Subscribe Now');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Subscribed!',
+                            text: response.message || 'Subscription successful.',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            willClose: () => {
+                                location.href = "{{ route('dashboard') }}"; 
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        let errMsg = xhr.responseJSON?.message || 'Something went wrong.';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: errMsg
+                        });
+                    }
+                });
+            });
+        });
+
         document.addEventListener('DOMContentLoaded', function () {
 
             const stars = document.querySelectorAll('#starRating .star');
