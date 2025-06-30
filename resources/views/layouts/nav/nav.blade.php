@@ -11,7 +11,7 @@
 </li>
 
 <li class="nav-item">
-    <a class="nav-link {{ request()->is('subscription') ? 'active fw-bold' : '' }}" href="{{ url('/subscription') }}">
+    <a class="nav-link {{ request()->is('subscription') ? 'active fw-bold' : '' }}" href="{{ route('subscription') }}">
         Subscription
     </a>
 </li>

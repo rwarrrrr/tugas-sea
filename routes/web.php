@@ -8,13 +8,13 @@ use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\SubscriptionController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::view('/menu', 'pages.menu');
-Route::view('/subscription', 'pages.subscription');
 Route::view('/contact', 'pages.contact');
 
 Route::middleware('auth')->group(function () {
@@ -46,6 +46,9 @@ Route::middleware('auth')->group(function () {
         })->middleware(['auth', 'verified'])->name('dashboard');
         
         Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
+        
+        Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription');
+        Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
     });
 
 });
