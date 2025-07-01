@@ -46,4 +46,59 @@ class SubscriptionController extends Controller
 
         return response()->json(['message' => 'Subscription berhasil disimpan']);
     }
+
+    public function pause(Request $request, $id)
+    {
+        $request->validate([
+            'pause_start' => 'required|date|after_or_equal:today',
+            'pause_end' => 'required|date|after_or_equal:pause_start',
+        ]);
+
+        $subscription = Subscription::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $subscription->update([
+            'pause_start' => $request->pause_start,
+            'pause_end' => $request->pause_end,
+            'status' => 'paused',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Subscription berhasil dipause.',
+        ]);
+    }
+
+    public function resume($id)
+    {
+
+        $subscription = Subscription::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $subscription->update([
+            'pause_start' => null,
+            'pause_end' => null,
+            'status' => 'active',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Subscription berhasil diresume.',
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $subscription = Subscription::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $subscription->delete();
+
+        return response()->json(['message' => 'Langganan berhasil dibatalkan.']);
+    }
+
+
 }

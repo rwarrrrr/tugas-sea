@@ -1,27 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- Loop Active Subscriptions --}}
-@php
-    $subscriptions = [
-        [
-            'id' => 1,
-            'plan' => 'Protein Plan',
-            'meals' => ['Breakfast', 'Dinner'],
-            'days' => ['Monday', 'Wednesday', 'Friday'],
-            'price' => 1720000,
-            'status' => 'active',
-        ],
-        [
-            'id' => 2,
-            'plan' => 'Diet Plan',
-            'meals' => ['Lunch'],
-            'days' => ['Tuesday', 'Thursday'],
-            'price' => 860000,
-            'status' => 'active',
-        ]
-    ];
-@endphp
+
 
 @foreach ($subscriptions as $sub)
     <div class="card mb-4 shadow-sm">
@@ -29,101 +9,195 @@
             {{ $sub['plan'] }} Subscription
         </div>
         <div class="card-body">
-            <p><strong>Meal Types:</strong> {{ implode(', ', $sub['meals']) }}</p>
-            <p><strong>Delivery Days:</strong> {{ implode(', ', $sub['days']) }}</p>
-            <p><strong>Total Price:</strong> Rp{{ number_format($sub['price'], 0, ',', '.') }}</p>
-            <p><strong>Status:</strong> <span class="badge bg-success text-uppercase">{{ $sub['status'] }}</span></p>
+            <p><strong>Meal Types:</strong> {{ implode(', ', $sub['meal_types']) }}</p>
+            <p><strong>Delivery Days:</strong> {{ implode(', ', $sub['delivery_days']) }}</p>
+            <p><strong>Total Price:</strong> Rp{{ number_format($sub['total_price'], 0, ',', '.') }}</p>
+            <p><strong>Status:</strong> 
+            @if ($sub['status'] == 'active')
+                <span class="badge bg-success text-uppercase">{{ $sub['status'] }}</span></p>
+            @elseif ($sub['status'] == 'paused')
+                <span class="badge bg-warning text-uppercase">{{ $sub['status'] }}</span></p>            
+                <p><strong>Start Date:</strong> {{ $sub['pause_start'] }}</p>
+                <p><strong>End Date:</strong> {{ $sub['pause_end'] }}</p>
+            @else 
+                <span class="badge bg-danger text-uppercase">{{ $sub['status'] }}</span></p>
+            @endif
 
-            {{-- Pause Subscription Form --}}
-            <form class="pause-form mt-3" data-sub-id="{{ $sub['id'] }}">
-                <div class="row g-2">
-                    <div class="col">
-                        <label class="form-label">Pause From</label>
-                        <input type="date" class="form-control pause-start" required>
+            @if ($sub['status'] == 'paused')
+                <form class="resume-form" data-id="{{ $sub->id }}">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <button type="submit" class="btn btn-sm btn-success">Resume</button>
+                        </div>
                     </div>
-                    <div class="col">
-                        <label class="form-label">Pause Until</label>
-                        <input type="date" class="form-control pause-end" required>
+                </form>
+            @elseif ($sub['status'] == 'active')
+                <form class="pause-form" data-id="{{ $sub->id }}">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <input type="date" class="form-control pause-start" required>
+                        </div>
+                        <div class="col">
+                            <input type="date" class="form-control pause-end" required>
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-sm btn-warning">Pause</button>
+                        </div>
                     </div>
-                    <div class="col-auto align-self-end">
-                        <button type="submit" class="btn btn-warning">Pause</button>
-                    </div>
-                </div>
-                <small class="text-danger d-none mt-1 error-msg">Pause dates cannot be in the past.</small>
-            </form>
+                    <div class="text-danger small error-msg d-none">Tanggal tidak valid.</div>
+                </form>
+            @else 
+            @endif
 
-            {{-- Cancel Button --}}
             <div class="mt-3">
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCancelModal" data-sub-id="{{ $sub['id'] }}">
-                    Cancel Subscription
-                </button>
+                <button class="btn btn-sm btn-danger cancel-subscription" 
+                        data-id="{{ $sub->id }}" >Cancel</button>
             </div>
         </div>
     </div>
 
-    {{-- Modal Cancel --}}
-<div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="POST" action="#" id="cancelForm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirm Cancellation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to cancel this subscription permanently?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <button type="submit" class="btn btn-danger">Yes, Cancel It</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+
 
 @endforeach
+
+<div class="modal fade" id="confirmCancelModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" id="cancelForm">
+      @csrf
+      @method('DELETE')
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Konfirmasi Pembatalan</h5>
+        </div>
+        <div class="modal-body">
+          Yakin ingin membatalkan langganan ini?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-danger">Batalkan</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
 
 @endsection
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const today = new Date().toISOString().split('T')[0];
-
-    document.querySelectorAll('.pause-form').forEach(form => {
-        form.addEventListener('submit', function (e) {
+    $(document).ready(function () {
+        $('.pause-form').on('submit', function (e) {
             e.preventDefault();
-            const start = this.querySelector('.pause-start').value;
-            const end = this.querySelector('.pause-end').value;
-            const errorMsg = this.querySelector('.error-msg');
 
-            if (start < today || end < today) {
-                errorMsg.classList.remove('d-none');
+            const form = $(this);
+            const id = form.data('id');
+            const start = form.find('.pause-start').val();
+            const end = form.find('.pause-end').val();
+            const today = new Date().toISOString().split('T')[0];
+
+            if (!start || !end || start < today || end < start) {
+                Swal.fire('Error', 'Tanggal tidak valid!', 'error');
                 return;
             }
 
-            if (start > end) {
-                errorMsg.classList.remove('d-none');
-                errorMsg.textContent = "End date must be after start date.";
-                return;
-            }
+            Swal.fire({
+                title: 'Pause Langganan?',
+                html: `Mulai: <strong>${start}</strong><br>Selesai: <strong>${end}</strong><br><br>Tidak akan ada pengiriman selama periode ini.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Pause',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#f0ad4e'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route("subscription.pause", ":id") }}' .replace(':id', id),
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            pause_start: start,
+                            pause_end: end,
+                        },
+                        success: function (res) {
+                            Swal.fire('Berhasil', res.message, 'success').then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function (err) {
+                            Swal.fire('Gagal', err.responseJSON.message || 'Terjadi kesalahan', 'error');
+                        }
+                    });
+                }
+            });
+        });
+        
+        $('.resume-form').on('submit', function (e) {
+            e.preventDefault();
 
-            errorMsg.classList.add('d-none');
-            alert('Subscription will be paused from ' + start + ' to ' + end);
-            // TODO: Send to backend
+            const form = $(this);
+            const id = form.data('id');
+            
+            swal.fire({
+                title: 'Resume Langganan?',
+                text: 'Langganan akan dilanjutkan dan pengiriman akan kembali normal.',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Resume',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#28a745'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route("subscription.resume", ":id") }}'.replace(':id', id),
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function (res) {
+                            Swal.fire('Berhasil', res.message, 'success').then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function (err) {
+                            Swal.fire('Gagal', err.responseJSON.message || 'Terjadi kesalahan', 'error');
+                        }
+                    });
+                }
+            })
+        });
+
+        $('.cancel-subscription').on('click', function () {
+            const id = $(this).data('id');
+
+            Swal.fire({
+                title: 'Yakin ingin membatalkan langganan?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, batalkan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route("subscription.destroy", ":id") }}'.replace(':id', id),
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            _method: 'POST'
+                        },
+                        success: function (res) {
+                            Swal.fire('Dibatalkan', res.message, 'success').then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function () {
+                            Swal.fire('Gagal', 'Tidak bisa membatalkan langganan.', 'error');
+                        }
+                    });
+                }
+            });
         });
     });
 
-    // Inject subscription ID to cancel form
-    const cancelModal = document.getElementById('confirmCancelModal');
-    cancelModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const subId = button.getAttribute('data-sub-id');
-        const form = this.querySelector('form#cancelForm');
-        // Set action route dynamically if needed
-        console.log('Cancel subscription ID:', subId);
-    });
-});
 </script>
 @endpush

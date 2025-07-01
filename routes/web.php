@@ -10,6 +10,7 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,16 +43,18 @@ Route::middleware('auth')->group(function () {
     });
     
     Route::middleware([UserMiddleware::class])->group(function () {
-        Route::get('/dashboard', function () {
-            return view('dashboard');
-        })->middleware(['auth', 'verified'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         
         Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
         
         Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription');
+        Route::post('/subscription/pause/{id}', [SubscriptionController::class, 'pause'])->name('subscription.pause');
+        Route::post('/subscription/resume/{id}', [SubscriptionController::class, 'resume'])->name('subscription.resume');
+        Route::post('/subscription/{id}', [SubscriptionController::class, 'destroy'])->name('subscription.destroy');
         Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
         
         Route::post('/menu', [MenuController::class, 'store'])->name('menu.store');
+
     });
 
 });
