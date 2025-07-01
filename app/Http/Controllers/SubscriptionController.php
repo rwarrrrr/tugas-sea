@@ -106,16 +106,5 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    public function destroy($id)
-    {
-        $subscription = Subscription::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
-
-        $subscription->delete();
-
-        return response()->json(['message' => 'Langganan berhasil dibatalkan.']);
-    }
-
 
 }

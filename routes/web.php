@@ -11,6 +11,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SubscriptionManagementController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,6 +40,12 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
         Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
+
+        Route::get('/admin/subscriptions', [SubscriptionManagementController::class, 'index'])->name('subscriptions.index');
+        Route::get('/admin/subscriptions/data', [SubscriptionManagementController::class, 'data'])->name('subscriptions.data');
+        Route::get('/admin/subscriptions/detail/{id}', [SubscriptionManagementController::class, 'show'])->name('subscriptions.detail');
+        Route::post('/admin/subscriptions/{id}', [SubscriptionManagementController::class, 'destroy'])->name('subscriptions.destroy');
+
     });
     
     Route::middleware([UserMiddleware::class])->group(function () {
@@ -50,7 +57,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/subscription/pause/{id}', [SubscriptionController::class, 'pause'])->name('subscription.pause');
         Route::post('/subscription/resume/{id}', [SubscriptionController::class, 'resume'])->name('subscription.resume');
         Route::post('/subscription/cancel/{id}', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
-        Route::post('/subscription/{id}', [SubscriptionController::class, 'destroy'])->name('subscription.destroy');
         Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
         
         Route::post('/menu', [MenuController::class, 'store'])->name('menu.store');

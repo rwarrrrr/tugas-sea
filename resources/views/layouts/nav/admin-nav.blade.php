@@ -17,7 +17,7 @@
 </li>
 
 <li class="nav-item">
-    <a class="nav-link {{ request()->is('menu') ? 'active fw-bold' : '' }}" href="{{ url('/menu') }}">
+    <a class="nav-link {{ request()->is('admin/subscriptions') ? 'active fw-bold' : '' }}" href="{{ route('subscriptions.index') }}">
         Subscription
     </a>
 </li>
