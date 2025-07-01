@@ -1,0 +1,67 @@
+@font-face {
+    font-family: 'Circular Std Light';
+    src: url('../fonts/CircularStd-Light.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Circular Std Book';
+    src: url('../fonts/CircularStd-Book.otf') format('opentype');
+}
+
+body {
+    font-family: 'Circular Std Light' !important;
+}
+
+.font-book {
+    font-family: 'Circular Std Book' !important;
+}
+
+.font-light {
+    font-family: 'Circular Std Light' !important;
+}
+
+.color-primary {
+    color: #FF6500 !important;
+}
+
+.active {
+    color: #FF6500 !important;
+    font-weight: bold !important;
+}
+
+#navbarNav{
+    font-size: 20px !important;
+}
+
+#navbarNav .nav-link {
+    margin-right: 20px !important;
+}
+
+.btn-rounded {
+    border-radius: 50px !important;
+}
+
+.rounded-15 {
+    border-radius: 15px !important;
+}
+
+.btn-primary {
+    background-color: #FF6500 !important;
+    border-color: #FF6500 !important;
+}
+
+.btn-primary:hover {
+    background-color: #e65c00 !important;
+    border-color: #e65c00 !important;
+}
+
+#hero{
+    height: 130vh;
+}
+
+#hero-card{
+    background-color: #F7F7F7;
+    border-radius: 20px;
+    border: 1px solid #E2E2E2;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

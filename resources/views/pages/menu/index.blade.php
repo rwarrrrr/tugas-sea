@@ -32,7 +32,7 @@
         @foreach ($plans as $plan)
             <div class="col">
                 <div class="card h-100 shadow-sm">
-                    <img src="{{ $plan['image'] }}" class="card-img-top" alt="{{ $plan['name'] }}">
+                    <img src="{{ asset('storage/'.$plan['image']) }}" class="card-img-top" alt="{{ $plan['name'] }}" style="height: 200px; width: 200px;">
                     <div class="card-body">
                         <h5 class="card-title">{{ $plan['name'] }}</h5>
                         <p class="text-success fw-semibold">{{ $plan['price'] }}</p>
