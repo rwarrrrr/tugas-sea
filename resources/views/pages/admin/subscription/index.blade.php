@@ -44,12 +44,11 @@
 @endsection
 
 @push('scripts')
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+function escapeHTML(str) {
+    return $('<div>').text(str).html();
+}
 $(document).ready(function () {
     const table = $('#subscriptionTable').DataTable({
         processing: true,
@@ -57,8 +56,18 @@ $(document).ready(function () {
         ajax: '{{ route('subscriptions.data') }}',
         columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'user', name: 'user' },
-            { data: 'plan', name: 'plan' },
+            { 
+                data: 'user', name: 'user' ,
+                render: function (data) {
+                    return escapeHTML(data);
+                }
+            },
+            { 
+                data: 'plan', name: 'plan' ,
+                render: function (data) {
+                    return escapeHTML(data);
+                }
+            },
             { data: 'meal_types', name: 'meal_types' },
             { data: 'delivery_days', name: 'delivery_days' },
             { data: 'total_price', name: 'total_price' },

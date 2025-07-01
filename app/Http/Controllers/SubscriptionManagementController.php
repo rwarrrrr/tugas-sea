@@ -18,8 +18,8 @@ class SubscriptionManagementController extends Controller
         $subs = Subscription::with('user')->latest();
         return DataTables::of($subs)
             ->addIndexColumn()
-            ->addColumn('user', fn($s) => $s->user->name)
-            ->addColumn('plan', fn($s) => $s->plan)
+            ->addColumn('user', fn($s) => e($s->user->name))
+            ->addColumn('plan', fn($s) => e($s->plan))
             ->addColumn('meal_types', fn($s) => implode(', ', $s->meal_types))
             ->addColumn('delivery_days', fn($s) => implode(', ', $s->delivery_days))
             ->addColumn('total_price', fn($s) => 'Rp ' . number_format($s->total_price, 0, ',', '.'))
@@ -36,12 +36,12 @@ class SubscriptionManagementController extends Controller
     {
         $s = Subscription::with('user')->findOrFail($id);
         return response()->json([
-            'user' => $s->user->name,
+            'user' => e($s->user->name),
             'phone' => $s->phone,
-            'plan' => $s->plan,
+            'plan' => e($s->plan),
             'meal_types' => implode(', ', (array) $s->meal_types),
             'delivery_days' => implode(', ', (array) $s->delivery_days),
-            'allergies' => $s->allergies,
+            'allergies' => e($s->allergies),
             'total_price' => $s->total_price,
             'status' => $s->status
         ]);

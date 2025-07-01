@@ -154,16 +154,19 @@ class PlanController extends Controller
         $plans = Plan::query();
 
         return DataTables::of($plans)
+            ->addColumn('name', fn($plan) => e($plan->name))
+            ->addColumn('highlight', fn($plan) => e($plan->highlight))
+            ->addColumn('description', fn($plan) => e($plan->description))
             ->addColumn('action', function ($plan) {
                 return '<button class="btn btn-warning btn-sm edit-btn"
                             data-id="'.$plan->id.'"
-                            data-name="'.$plan->name.'"
+                            data-name="'.e($plan->name).'"
                             data-price="'.$plan->price.'"
-                            data-highlight="'.$plan->highlight.'"
+                            data-highlight="'.e($plan->highlight).'"
                             data-meal_types="' . htmlspecialchars(json_encode($plan->meal_types), ENT_QUOTES, 'UTF-8') . '"
                             data-delivery_days="' . htmlspecialchars(json_encode($plan->delivery_days), ENT_QUOTES, 'UTF-8') . '" 
                             data-delivery_days=\''.json_encode($plan->delivery_days).'\'                            
-                            data-description="'.$plan->description.'"
+                            data-description="'.e($plan->description).'"
                             data-image="'.$plan->image.'"
                             data-is_active="'.$plan->is_active.'">Edit</button>
                             

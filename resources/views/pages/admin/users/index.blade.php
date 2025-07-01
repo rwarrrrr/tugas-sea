@@ -47,6 +47,9 @@
 
 @push('scripts')
     <script>
+        function escapeHTML(str) {
+            return $('<div>').text(str).html();
+        }
         $(document).ready(function () {
             const table = $('#userTable').DataTable({
                 processing: true,
@@ -70,7 +73,12 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
-                    { data: 'name' },
+                    { 
+                        data: 'name' ,
+                        render: function (data) {
+                            return escapeHTML(data);
+                        }
+                    },
                     { data: 'email' },
                     { data: 'role', render: function (data) {
                         return data === 'admin' ? '<span class="badge bg-primary">Admin</span>' : '<span class="badge bg-secondary">User</span>';

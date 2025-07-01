@@ -35,6 +35,10 @@ class UserManagementController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
+            'phone' => [
+                            'required',
+                            'regex:/^(08|\+628)[0-9]{8,13}$/'
+                        ], 
             'password' => [
                             'required',
                             'min:8',
@@ -120,7 +124,7 @@ class UserManagementController extends Controller
             ->addColumn('action', function ($user) {
                 return '<button class="btn btn-warning btn-sm edit-btn"
                             data-id="'.$user->id.'"
-                            data-name="'.$user->name.'">Edit</button>
+                            data-name="'.e($user->name).'">Edit</button>
                             
                         <button class="btn btn-secondary btn-sm reset-password" 
                             data-id="'.$user->id.'">Reset PW</button>

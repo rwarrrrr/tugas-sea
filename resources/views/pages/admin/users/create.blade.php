@@ -17,6 +17,11 @@
             <input type="email" name="email" class="form-control" required>
           </div>
           <div class="mb-3">
+            <label>Phone</label>
+            <input type="text" name="phone" class="form-control" required
+                   pattern="^(08|\+628)[0-9]{8,13}$" title="Nomor HP harus dimulai dengan 08 atau +628 dan diikuti 8-13 digit angka.">
+          </div>
+          <div class="mb-3">
             <label>Password</label>
             <div class="input-group">
               <input id="password" type="password"

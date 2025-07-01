@@ -23,7 +23,7 @@
     <button class="btn btn-outline-success mb-3" id="bulk-export-excel">Export Excel</button>
     <button class="btn btn-outline-danger mb-3" id="bulk-export-pdf">Export PDF</button>
 
-    <table class="table table-bordered" id="planTable">
+    <table class="table table-bordered" id="planTable" style="width: 100%;">
         <thead>
             <tr>
                 <th>
@@ -56,6 +56,10 @@
 
 @push('scripts')
     <script>
+        function escapeHTML(str) {
+            return $('<div>').text(str).html();
+        }
+
         $(document).ready(function () {
             const table = $('#planTable').DataTable({
                 processing: true,
@@ -79,14 +83,29 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
-                    { data: 'name' },
+                    { 
+                        data: 'name',
+                        render: function (data) {
+                            return escapeHTML(data);
+                        }
+                    },
                     { data: 'price', render: $.fn.dataTable.render.number(',', '.', 0, 'Rp') },
-                    { data: 'highlight' },
+                    { 
+                        data: 'highlight',
+                        render: function (data) {
+                            return escapeHTML(data);
+                        }
+                    },
                     { data: 'meal_types' },
                     { data: 'delivery_days', render: function (data) {
                         return data.map(day => day.charAt(0).toUpperCase() + day.slice(1)).join(', ');
                     }},
-                    { data: 'description' },
+                    { 
+                        data: 'description',
+                        render: function (data) {
+                            return escapeHTML(data);
+                        }
+                    },
                     { data: 'image', orderable: false, searchable: false },
                     { data: 'is_active', render: function (data) {
                         return data ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Inactive</span>';

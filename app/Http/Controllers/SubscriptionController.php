@@ -18,7 +18,7 @@ class SubscriptionController extends Controller
         $request->validate([
             'name'          => 'required|string|max:255',
             'phone'         => ['required', 'regex:/^(08|\+628)[0-9]{8,13}$/'], // nomor HP Indonesia
-            'plan'          => 'required|in:Diet,Protein,Royal',
+            'plan'          => 'required',
             'meal_types'    => 'required|array|min:1',
             'delivery_days' => 'required|array|min:1',
             'allergies'     => 'nullable|string',
