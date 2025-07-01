@@ -73,7 +73,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="text-center text-muted py-3 border-top border-left border-right  bg-light w-75 mx-auto shadow-sm fixed-bottom" style="border-top-right-radius: 20px;border-top-left-radius: 20px;">
+    <footer class="text-center text-muted py-3 border-top border-left border-right  bg-light w-75 mx-auto shadow-sm " style="border-top-right-radius: 20px;border-top-left-radius: 20px;">
         &copy; {{ date('Y') }} SEA Catering. All rights reserved.
     </footer>
 
