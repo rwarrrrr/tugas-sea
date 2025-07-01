@@ -89,6 +89,23 @@ class SubscriptionController extends Controller
         ]);
     }
 
+    public function cancel($id)
+    {
+
+        $subscription = Subscription::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $subscription->update([
+            'status' => 'canceled',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Subscription berhasil dibatalkan.',
+        ]);
+    }
+
     public function destroy($id)
     {
         $subscription = Subscription::where('id', $id)

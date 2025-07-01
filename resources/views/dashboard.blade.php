@@ -179,7 +179,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '{{ route("subscription.destroy", ":id") }}'.replace(':id', id),
+                        url: '{{ route("subscription.cancel", ":id") }}'.replace(':id', id),
                         method: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',

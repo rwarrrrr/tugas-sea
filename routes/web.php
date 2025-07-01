@@ -22,9 +22,8 @@ Route::get('/contacts', [ContactController::class, 'dashboard'])->name('contacts
 Route::middleware('auth')->group(function () {
 
     Route::middleware([AdminMiddleware::class])->prefix('admin')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin-dashboard');
-        })->middleware(['auth', 'verified'])->name('admin.dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'indexAdmin'])->name('admin.dashboard');
+        Route::get('/dashboard/data', [DashboardController::class, 'dataAdmin'])->name('admin.dashboard.data');
 
         Route::get('/plans/data', [PlanController::class, 'data'])->name('plans.data');
         Route::post('/plans/bulk-delete', [PlanController::class, 'bulkDelete'])->name('plans.bulkDelete');
@@ -50,6 +49,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription');
         Route::post('/subscription/pause/{id}', [SubscriptionController::class, 'pause'])->name('subscription.pause');
         Route::post('/subscription/resume/{id}', [SubscriptionController::class, 'resume'])->name('subscription.resume');
+        Route::post('/subscription/cancel/{id}', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
         Route::post('/subscription/{id}', [SubscriptionController::class, 'destroy'])->name('subscription.destroy');
         Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
         

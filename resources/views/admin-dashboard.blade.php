@@ -1,3 +1,4 @@
+<!-- resources/views/admin/dashboard.blade.php -->
 @extends('layouts.app')
 
 @section('content')
@@ -29,7 +30,7 @@
             <div class="card shadow-sm border-start border-primary border-5">
                 <div class="card-body">
                     <h6>New Subscriptions</h6>
-                    <h4 id="newSubs">12</h4>
+                    <h4 id="newSubs">-</h4>
                 </div>
             </div>
         </div>
@@ -38,7 +39,7 @@
             <div class="card shadow-sm border-start border-success border-5">
                 <div class="card-body">
                     <h6>Monthly Recurring Revenue</h6>
-                    <h4 id="mrr">Rp 4.860.000</h4>
+                    <h4 id="mrr">-</h4>
                 </div>
             </div>
         </div>
@@ -47,7 +48,7 @@
             <div class="card shadow-sm border-start border-warning border-5">
                 <div class="card-body">
                     <h6>Reactivations</h6>
-                    <h4 id="reactivations">3</h4>
+                    <h4 id="reactivations">-</h4>
                 </div>
             </div>
         </div>
@@ -56,7 +57,27 @@
             <div class="card shadow-sm border-start border-danger border-5">
                 <div class="card-body">
                     <h6>Active Subscriptions</h6>
-                    <h4 id="growth">27</h4>
+                    <h4 id="growth">-</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-4">
+        <!-- Card 1 -->
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="subscriptionChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="priceChart" width="400" height="300"></canvas>
                 </div>
             </div>
         </div>
@@ -65,30 +86,99 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('filterForm');
+$(document).ready(function () {
+    const barCtx = document.getElementById('subscriptionChart').getContext('2d');
+    const lineCtx = document.getElementById('priceChart').getContext('2d');
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-
-        if (startDate > endDate) {
-            alert('Start date must be before end date');
-            return;
+    const barChart = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Jumlah Subscription',
+                data: [],
+                backgroundColor: '#0d6efd'
+            }]
+        },
+        options: {
+            responsive: true,
+            animation: {
+                duration: 1000,
+                easing: 'easeOutBounce'
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
-
-        // TODO: Replace with real fetch to backend
-        console.log('Filter from:', startDate, 'to:', endDate);
-
-        // Simulasi update data
-        document.getElementById('newSubs').innerText = Math.floor(Math.random() * 20);
-        document.getElementById('mrr').innerText = "Rp " + (Math.floor(Math.random() * 10) * 100000).toLocaleString();
-        document.getElementById('reactivations').innerText = Math.floor(Math.random() * 5);
-        document.getElementById('growth').innerText = 27 + Math.floor(Math.random() * 10);
     });
+
+    const lineChart = new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Total Harga per Hari',
+                data: [],
+                borderColor: '#198754',
+                backgroundColor: 'rgba(25,135,84,0.1)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            animation: {
+                duration: 1200,
+                easing: 'easeInOutQuart'
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    function fetchMetrics(start, end) {
+        $.ajax({
+            url: `{{ route('admin.dashboard.data') }}`,
+            type: 'GET',
+            data: { start, end },
+            success: function (res) {
+                $('#newSubs').text(res.new_subscriptions);
+                $('#mrr').text('Rp ' + res.mrr.toLocaleString());
+                $('#reactivations').text(res.reactivations);
+                $('#growth').text(res.growth);
+
+                // Bar Chart
+                barChart.data.labels = res.chart.labels;
+                barChart.data.datasets[0].data = res.chart.data;
+                barChart.update();
+
+                // Line Chart
+                lineChart.data.labels = res.chart.labels;
+                lineChart.data.datasets[0].data = res.chart.total_price;
+                lineChart.update();
+            }
+        });
+    }
+
+    $('#filterForm').on('submit', function (e) {
+        e.preventDefault();
+        const start = $('#startDate').val();
+        const end = $('#endDate').val();
+        fetchMetrics(start, end);
+    });
+
+    // Initial load
+    fetchMetrics($('#startDate').val(), $('#endDate').val());
 });
+
 </script>
 @endpush
