@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
+    public function dashboard()
+    {
+        $contact = Contact::first();
+        return view('pages.contact.index', compact('contact'));
+    }
+
     public function index()
     {
         $contacts = Contact::first();

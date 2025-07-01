@@ -17,7 +17,7 @@ Route::get('/', function () {
 });
 
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
-Route::view('/contact', 'pages.contact');
+Route::get('/contacts', [ContactController::class, 'dashboard'])->name('contacts.dashboard');
 
 Route::middleware('auth')->group(function () {
 
